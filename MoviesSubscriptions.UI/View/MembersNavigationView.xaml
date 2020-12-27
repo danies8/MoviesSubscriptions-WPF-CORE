@@ -1,0 +1,121 @@
+﻿<UserControl x:Class="MoviesSubscriptions.UI.View.MembersNavigationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors" 
+             xmlns:converters="clr-namespace:MoviesSubscriptions.UI.View.Converters"
+              mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" x:Name="currentUserControl">
+    <Grid>
+        <Grid.Resources>
+            <Style x:Key="NaviItemContainerStyle" TargetType="ContentPresenter">
+                <Setter Property="HorizontalAlignment" Value="Left"/>
+                <Setter Property="Margin" Value="2"/>
+            </Style>
+            <DataTemplate x:Key="NaviItemTemplate">
+                <Button 
+              Command="{Binding SelectedMovieDetailsCommand}" CommandParameter="{Binding ElementName=subscriptionId, Path=Text}"
+              FontSize="16">
+                    <Button.Content>
+                        <StackPanel Grid.Row ="0" Grid.Column ="0"  Width="200" Margin="5" Orientation="Horizontal">
+                            <TextBlock Text="{Binding Movie.Name}" Margin="5"/>
+                            <TextBlock  Text="{Binding WatchedDate, ConverterCulture=en-US, StringFormat=\{0:yyyy-MM-dd\}}" Width="200" Margin="5" />
+                            <TextBlock  Text="{Binding Id}" Visibility="Hidden" x:Name="subscriptionId"/>
+                        </StackPanel>
+                    </Button.Content>
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid x:Name="grid">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter Property="FontWeight" Value="Normal"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
+            </DataTemplate>
+            <converters:SelectedMemberToBoolConverter x:Key="selectedMemberToBoolConverter"/>
+          
+            <DataTemplate x:Key="membersList">
+                <Border BorderBrush="White" BorderThickness="2" Margin="3">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition  Width="auto"/>
+                            <ColumnDefinition  Width="auto"/>
+                            <ColumnDefinition  Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition  Height="auto"/>
+                            <RowDefinition  Height="auto"/>
+                            <RowDefinition  Height="auto"/>
+                            <RowDefinition Height="*"/>
+                         </Grid.RowDefinitions>
+                        <TextBlock Grid.Row ="0" Grid.Column ="0"  Grid.ColumnSpan="2" Text="{Binding Name}" Width="200" Margin="0 5" FontSize="24"/>
+                        <Label Grid.Row ="1" Grid.Column ="0" Content = "Email:" Width="70" VerticalAlignment="Bottom" />
+                        <TextBlock Grid.Row ="1" Grid.Column ="1" Text="{Binding Email}" Width="200" Margin="0 5" />
+                        <Label Grid.Row ="2" Grid.Column ="0" Content ="City:" Width="70" VerticalAlignment="Bottom" />
+                        <TextBlock Grid.Row ="2" Grid.Column ="1" Text="{Binding City}" Width="200" Margin="0 5"/>
+                        <Expander Header="Movies Watched"  ToolTip="Movies Watched"  Grid.Row ="3" Grid.Column ="0"  Grid.ColumnSpan="3" Margin="0 5" DataContext="{Binding ElementName=currentUserControl, Path=DataContext}"
+                                    IsExpanded="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="Expanded" >
+                                    <b:InvokeCommandAction Command="{Binding  MoviesWatchedCommand,  UpdateSourceTrigger=PropertyChanged}"/>
+                                 </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                            <StackPanel Orientation="Vertical">
+                                <Expander ToolTip="Subscribed to a new movie"  Foreground ="DarkRed" FontWeight="Bold" DataContext="{Binding ElementName=currentUserControl, Path=DataContext}"
+                                           IsExpanded="{Binding IsSelected, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}">
+                                      <Expander.Header>
+                                        <TextBlock Text="Subscribed to a new movie" FontSize="20"/>
+                                    </Expander.Header>
+                                    <Border BorderThickness="5" BorderBrush="DarkRed">
+                                        <StackPanel Orientation="Vertical"  >
+                                            <TextBlock  Width="200" Margin="0 5" Foreground ="DarkRed" FontWeight="Bold" Text="Add a new movie"/>
+                                            <ComboBox   ItemsSource="{Binding MoviesWatched}" SelectedIndex="0"
+                                                DisplayMemberPath="Name" SelectedValuePath="Id"
+                                                SelectedValue="{Binding SelectedMovieWatched.Id,Mode=TwoWay}"
+                                                Width="200" Margin="0 5" Foreground ="Red"/>
+                                            <DatePicker SelectedDate="{Binding SelectedMovieWatched.MovieWatchedDate ,Mode=TwoWay}" Width="200" Margin="0 5" Foreground ="Red"/>
+                                            <Button  Command="{Binding  SubscribedMovieCommand}"  Width="100" Margin="0 5" Content="Subscribe" Foreground ="Red"/>
+                                       </StackPanel>
+                                    </Border>
+                                </Expander>
+                                 <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Auto">
+                                    <ItemsControl x:Name="moviesWatcedList" ItemsSource="{Binding SubscriptionsViewModel}" DataContext="{Binding ElementName=currentUserControl, Path=DataContext}"
+                                    ItemContainerStyle="{StaticResource NaviItemContainerStyle}"
+                                    ItemTemplate="{StaticResource NaviItemTemplate}"
+                                      Margin="10"/> 
+                                </ScrollViewer>
+                             
+                            </StackPanel>
+                        </Expander>
+                    </Grid>
+                </Border>
+            </DataTemplate>
+
+        </Grid.Resources>
+        <ListView Grid.Row="3" Grid.Column="0"  ItemsSource="{Binding AllMembers}" x:Name="allMembers" SelectionMode="Single"
+                 SelectedItem="{Binding SelectedMember, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                ItemTemplate="{StaticResource membersList}">
+
+            <b:Interaction.Triggers>
+                <b:EventTrigger EventName="SelectionChanged">
+                    <b:InvokeCommandAction Command="{Binding SelectedMemberCommand}"/>
+                </b:EventTrigger>
+            </b:Interaction.Triggers>
+  
+
+        </ListView>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="MoviesSubscriptions.UI.View.WelcomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+              mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             Height="600" Width="800">
+    <Grid>
+        <FlowDocumentReader >
+            <FlowDocument>
+                
+                <Paragraph>
+                    <Bold FontSize="24">Movies Subscriptions Project used these technologies:</Bold>
+                    <LineBreak/>
+                    <LineBreak/>
+                    
+                </Paragraph>
+           
+
+                <List FontSize="20" Margin="5">
+                    <ListItem >
+                        <Paragraph>DotNet Core</Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>Client UI: WPF, MVVM, 
+                        <Hyperlink NavigateUri="https://mahapps.com/docs/themes/usage">
+                            App style based on MahApps.Metro</Hyperlink>
+                        </Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>Data Access:Entity farmework-code first</Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>DB:SQL</Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>
+                            <Hyperlink NavigateUri="https://app.pluralsight.com/library/courses/wpf-mvvm-entity-framework-app/table-of-contents">
+                                Based on course of Building an Enterprise App with WPF, MVVM, and Entity Framework Code First by Thomas Claudius Huber</Hyperlink>
+                        </Paragraph>
+                    </ListItem>
+
+                </List>
+
+            </FlowDocument>
+            </FlowDocumentReader>
+
+    </Grid>
+</UserControl>
